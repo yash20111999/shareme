@@ -10,20 +10,15 @@ import { client } from '../client';
 
 const Login = () => {
   const navigate = useNavigate();
-  const createOrGetUser = (response) => {
-    const decode = jwt_decode(response.credential);
-    return decode;
-  };
   const responseGoogle = (response) => {
-    localStorage.setItem('user', JSON.stringify(createOrGetUser(response)));
-    const { name, sub, picture } = createOrGetUser(response);
+    localStorage.setItem('user', JSON.stringify(jwt_decode(response.credential)));
+    const { name, sub, picture } = jwt_decode(response.credential);
     const doc = {
       _id: sub,
       _type: 'user',
       userName: name,
       image: picture,
     };
-    console.log(doc, "doc");
     client.createIfNotExists(doc).then(() => {
       navigate('/', { replace: true });
     });
